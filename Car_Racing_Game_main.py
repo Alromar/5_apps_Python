@@ -1,7 +1,10 @@
-import pygame, sys, time, random
+import pygame
+import random
+import sys
+import time
 from pygame.locals import *
+from racing_dodge_cars import DodgeCars
 #5 import class racing_dodge_cars.py
-from racing_dodge_cars import *
 
 #1 initialiseren screen
 pygame.init()
@@ -24,7 +27,7 @@ display = pygame.display.set_mode((width, height))  #display surface objects
 pygame.display.set_caption("The Car Racing")  #Caption
 clock = pygame.time.Clock()  #Time Object
 
-#3images
+#3 images
 CarImg = pygame.image.load("images/car.png")
 RoadImg1 = pygame.image.load("images/road1.jpg")
 TreeImg1 = pygame.image.load("images/longtree1.jpg")
@@ -42,7 +45,7 @@ Previous_Score.Previous_Score()
 EndGame = False
 GamePause = False
 
-#7instance
+#8instance
 Just_In = DodgeCars(Display)
 
 
@@ -71,6 +74,58 @@ def Entry_Screen():
 
         pygame.display.update()
         clock.tick(30)
+
+#18
+def crash(OCar_startx,Ocar_Starty,count):
+    Enter_Current_Score = DodgeCars(Display)
+    #pass crash sound
+    SoundObj = pygame.mixer.Sound('images/shot.wav')
+    SoundObj.play()
+    explosion(OCar_startx,Ocar_Starty) #create function later
+    Enter_Current_Score.Enter_Current_Score(count)
+    life_count() #create function later
+    time.sleep(2)
+    main() #create function later
+
+#19
+def explosion(OCar_startx,Ocar_Starty):
+    ExpImg = pygame.image.load('images/explosion.gif')
+    Display.blit(ExpImg,(OCar_startx,Ocar_Starty))
+    pygame.display.update()
+
+#20
+def life_count():
+    global life
+    life -= 1
+    if life == -1:
+        GameOver = DodgeCars(Display)
+        GameOver.gameover(width,height)
+
+        while True:
+            Restart_Page() #func to create later
+
+#22
+def Restart_Page():
+    Interactive(250,450,20, green,l_green,"Restart!")  #coords button
+    Interactive(550,450,20, red,l_red,"Quit!")  #coords button
+    pygame.display.update()
+    clock.tick(15)
+
+#23
+def Pause():
+    global GamePaused
+    pygame.mixer.music.pause()
+    GamePaused = True
+
+    while GamePaused:
+        display_message("PAUSED",100,width/2,height/2,black)
+        Interactive(250,450,20,green,l_green,"Continue!")
+        Interactive(550,450,20,red,l_red,"Quit!")
+        pygame.display.update()
+        clock.tick(30)
+
+
+
 
 #9 function Interactive
 mousex,mousey = 0,0
@@ -120,6 +175,33 @@ def Interactive(centerx,centery,radius,icolor,acolor,message):
     else:
         Just_In.lights(centerx,centery,radius,color)
         display_message(message,20,centerx,centery+50,black)
+
+#24
+def Enter_Game():
+   Display.fill(roadcolor)
+   Roadx = 200
+   Roady = -580
+   Treex1 = 0
+   Treey1= 0
+   Treex2 = 605
+   Treey2 = 0
+
+   Start_Number = DodgeCars(Display)
+   At_start_time = 3
+
+   while At_start_time >= 0:
+       Start_Number.Blit_Image(RoadImg1, Roadx,Roady)  #Calling function to Blit
+       Start_Number.Blit_Image(TreeImg1, Treex1,Treey1)  #Calling function to Blit
+       Start_Number.Blit_Image(TreeImg2, Treex2,Treey2)  #Calling function to Blit
+
+       if At_start_time == 0:
+           display_message("Go", 150,width/2,height/2,black)
+       else:
+           display_message(str(At_start_time),150,width/2,height/2,black)
+
+       At_start_time -= 1
+       pygame.display.update()
+       clock.tick(1)
 
 
 
