@@ -10,6 +10,7 @@ from pygame.locals import *
 
 class DodgeCars:        #initialiser function of class
     #constructor function
+
     def __init__(self,Display):
         self.Display = Display
         self.white = (255,255,255)
@@ -17,7 +18,8 @@ class DodgeCars:        #initialiser function of class
         self.black = (0,0,0)
         self.width = 800
         self.height = 600
-        self.GOImg = pygame.image.load("gameover.png")
+        self.GOImg = pygame.image.load("images/gameover.png")
+        self.PsScore = []
 
 
     #display image function
@@ -67,7 +69,8 @@ class DodgeCars:        #initialiser function of class
         # and store in list and strip all white space right side
         self.score = [int(x) for x in self.score]
         self.score.sort()
-        DodgeCars.Show_Previous_Score(self,self.score[len(self.score)-1])  #get the length of the previous scores\
+        if len(self.score) > 0:
+            DodgeCars.Show_Previous_Score(self,self.score[len(self.score)-1])  #get the length of the previous scores\
 
     #16
     def Show_Previous_Score(self,Pscore):
