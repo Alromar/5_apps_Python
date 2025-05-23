@@ -1,5 +1,5 @@
 import socket
-
+#server in beowser https://realpython.com/python-http-server/
 host = 'localhost'
 port = 8080
 
