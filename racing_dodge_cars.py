@@ -19,7 +19,7 @@ class DodgeCars:        #initialiser function of class
         self.width = 800
         self.height = 600
         self.GOImg = pygame.image.load("images/gameover.png")
-        self.PsScore = []
+        self.Pscore = []
 
 
     #display image function
@@ -36,7 +36,7 @@ class DodgeCars:        #initialiser function of class
 
     #11 function opponent car coordinates
     def Opponent_Car_Coordinates(self,Road_r):
-        self.OCar_Startx = random.randrange(200,Road_r,-64)
+        self.OCar_Startx = random.randrange(200,Road_r-64)
         self.OCar_Startylist = [-10,-20,-15,-12,-23]
         self.OCar_Starty = self.OCar_Startylist[random.randrange(0,4)]
         return self.OCar_Startx, self.OCar_Starty
@@ -67,10 +67,9 @@ class DodgeCars:        #initialiser function of class
         Read.close()
         self.score = [x.rstrip() for x in self.score]  # go through all the scores\
         # and store in list and strip all white space right side
-        self.score = [int(x) for x in self.score]
+        self.score = [int(x) for x in self.score if x != '']
         self.score.sort()
-        if len(self.score) > 0:
-            DodgeCars.Show_Previous_Score(self,self.score[len(self.score)-1])  #get the length of the previous scores\
+        DodgeCars.Show_Previous_Score(self,self.score[len(self.score)-1])  #get the length of the previous scores\
 
     #16
     def Show_Previous_Score(self,Pscore):

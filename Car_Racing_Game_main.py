@@ -44,7 +44,7 @@ Previous_Score = DodgeCars(Display)  #Class to display the screen created
 
 Previous_Score.Previous_Score()
 EndGame = False
-GamePause = False
+GamePaused = False
 
 #8instance
 Just_In = DodgeCars(Display)
@@ -80,7 +80,7 @@ def Entry_Screen():
 def crash(OCar_startx,Ocar_Starty,count):
     Enter_Current_Score = DodgeCars(Display)
     #pass crash sound
-    SoundObj = pygame.mixer.Sound('images/shot.wav')
+    SoundObj = pygame.mixer.Sound('shot.mp3')
     SoundObj.play()
     explosion(OCar_startx,Ocar_Starty) #create function later
     Enter_Current_Score.Enter_Current_Score(count)
@@ -163,7 +163,7 @@ def Interactive(centerx,centery,radius,icolor,acolor,message):
             if life == -1:
                 Enter_Game()
                 main()
-            elif GamePause == True:
+            elif GamePaused == True:
                 GamePaused=False
                 pygame.mixer.music.unpause()
             else:
@@ -234,7 +234,7 @@ def main():
 
     Road_r = 600  #Right end of the road
     Current_Car1, OCar_w1, OCar_h1 = Objects[0].Opponent_Cars()
-    OCar_Startx1,OCar_Starty1 = Objects[0].Opponent_Car_Coordinates()
+    OCar_Startx1,OCar_Starty1 = Objects[0].Opponent_Car_Coordinates(Road_r)
     OCar_Speed1 = 7
     OCar_Speed2 = 7
     OCar_Speed3 = 9
@@ -346,15 +346,59 @@ def main():
             if Carx<200 or Carx > (width-Car_width) or (Cary+Car_height)>height or Cary<0: #Testing if the Car touched the sides of the road
                 crash(Carx,Cary,count)
             if OCar_Starty1>height: #if opponent Car crosses the bottom of the screen
+                if count > 10:
+                    Current_Car1,OCar_w1,OCar_h1 = Objects[0].Opponent_Cars()
+                    OCar_Startx1,OCar_Starty1 = Objects[0].Opponent_Car_Coordinates(Road_r)
+                    while(OCar_Startx1>OCar_Startx2 and OCar_Startx1<OCar_Startx2+OCar_w2):
+                        Current_Car1,OCar_w1,Ocar_h1 = Objects[0].Opponent_Cars()
+                        OCar_Startx1, OCar_Starty1 = Objects[0].Opponent_Car_Coordinates(Road_r)
+                else:
+                    Current_Car1, OCar_w1, OCar_h1 = Objects[0].Opponent_Cars()
+                    OCar_Startx1, OCar_Starty1 = Objects[0].Opponent_Car_Coordinates(Road_r)
 
+                count+=1
 
+                OCARSSPEEDS[0]+= 0.005
+                TempRoadSpeed += 0.004
+                MoveRoad += 0.004
+                MoveTree1 += 0.004
+                MoveTree2 += 0.004
+                TempTreeSpeed1 += 0.004
+                TempTreeSpeed2 += 0.004
 
+                if count == 10:
+                    Current_Car2,OCar_w2,OCar_h2 = Objects[0].Opponent_Cars()
+                    OCar_Startx2,OCar_Starty2 = Objects[0].Opponent_Car_Coordinates(Road_r)
+            if count>10:
+                if OCar_Starty2>height:
+                    Current_Car2, OCar_w2, OCar_h2 = Objects[0].Opponent_Cars()
+                    OCar_Startx2, OCar_Starty2 = Objects[0].Opponent_Car_Coordinates(Road_r)
+                    while (OCar_Startx2 > OCar_Startx1 and OCar_Startx2 < OCar_Startx1 + OCar_w1):
+                        Current_Car2, OCar_w2, Ocar_h2 = Objects[0].Opponent_Cars()
+                        OCar_Startx2, OCar_Starty2 = Objects[0].Opponent_Car_Coordinates(Road_r)
 
+                    if Second_Car_First_time == 1:
+                        OCARSSPEEDS[1] += 0.015
+                        Second_Car_First_time += 1
+                    OCARSSPEEDS[1] += 0.006
+                    count+= 1
 
+        #Checking Crash with the opp car
 
+        if Cary < OCar_Starty1+OCar_h1 and (Cary + Car_height)>OCar_Starty1:   #if Y-coord cross over
+            if (Carx>OCar_Startx1 and Carx<OCar_Startx1+OCar_w1) or (Carx + Car_width>OCar_Startx1 and Carx+Car_width<OCar_Startx1+OCar_w1):
+                crash(Carx,Cary-20,count)
+        if count>10 and count<= 20:
+            if Cary<OCar_Starty2+OCar_h2 and (Cary+Car_height)>OCar_Starty2:
+                if (Carx>OCar_Startx1 and Carx<OCar_Startx2+OCar_w2) or (Carx + Car_width>OCar_Startx2 and Carx+Car_width <OCar_Startx2 + OCar_w2):
+                    crash(Carx,Cary-20,count)
+        pygame.display.update()
+        clock.tick(FPS)
 
 
 Entry_Screen()
+pygame.quit()
+sys.exit()
 
 
 
